@@ -17,8 +17,7 @@ async def on_message(message):
         # check if it's not the bot
         return
 
-    if message.content.startswith("!"):
-        process_message(message)
+    await process_message(message)
 
 
 if __name__ == "__main__":
