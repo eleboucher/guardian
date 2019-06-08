@@ -6,9 +6,12 @@ verify_ssl = true
 [dev-packages]
 black = "*"
 flake8 = "*"
+isort = "*"
 
 [packages]
 discord-py = "*"
+aiodns = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.6"

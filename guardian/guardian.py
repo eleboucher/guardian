@@ -1,24 +1,31 @@
-import discord
+import logging
 import os
+import socket
 
-from process import process_message
+from aiohttp import AsyncResolver, ClientSession, TCPConnector
+from discord.ext.commands import Bot, when_mentioned_or
 
-client = discord.Client()
+from constant import prefix
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
+
+bot = Bot(command_prefix=when_mentioned_or(prefix), case_insensitive=True)
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(client))
+    print("Logged in as")
+    print(bot.user.name)
+    print(bot.user.id)
+    print("------")
 
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        # check if it's not the bot
-        return
+bot.http_session = ClientSession(
+    connector=TCPConnector(resolver=AsyncResolver(), family=socket.AF_INET)
+)
 
-    await process_message(message)
+bot.load_extension("cogs.emote")
+bot.run(os.getenv("DISCORD_TOKEN"))
 
-
-if __name__ == "__main__":
-    client.run(os.getenv("DISCORD_TOKEN"))
+bot.http_session.close()
