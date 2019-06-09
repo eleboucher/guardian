@@ -13,6 +13,7 @@ pre-commit = "*"
 discord-py = "*"
 aiodns = "*"
 aiohttp = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.6"

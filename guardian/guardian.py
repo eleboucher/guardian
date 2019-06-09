@@ -4,8 +4,11 @@ import socket
 
 from aiohttp import AsyncResolver, ClientSession, TCPConnector
 from discord.ext.commands import Bot, when_mentioned_or
+from dotenv import load_dotenv
 
 from constant import prefix
+
+load_dotenv(verbose=True)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -26,6 +29,9 @@ bot.http_session = ClientSession(
 )
 
 bot.load_extension("cogs.emote")
+bot.load_extension("cogs.fortytwo")
+
+
 bot.run(os.getenv("DISCORD_TOKEN"))
 
 bot.http_session.close()
