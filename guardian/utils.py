@@ -28,3 +28,25 @@ def get_internship(projects_users):
     ):
         return ret[project["status"]]
     return ":negative_squared_cross_mark:"
+
+
+def pluralize(str, count, plural=None):
+    if count == 1:
+        return str
+    if plural:
+        return plural
+    return f"{str}s"
+
+
+def format_timedelta(timedelta):
+    s = timedelta.total_seconds()
+    ret = ""
+    days, remainder = divmod(s, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    if days > 7:
+        return f"{int(days / 7)} {pluralize('week', int(days / 7))}"
+    if days > 0:
+        ret += f"{days} {pluralize('day', days)}"
+    minutes = remainder / 60
+    ret += f"{minutes} {pluralize('minute', minutes)}"
+    return ret

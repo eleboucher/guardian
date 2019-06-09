@@ -2,10 +2,11 @@ import asyncio
 import logging
 import discord
 import os
+from datetime import datetime
 
-from discord.ext.commands import Cog, command
+from discord.ext.commands import Bot, Cog, command
 
-from utils import get_internship
+from utils import get_internship, format_timedelta
 
 log = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ BASE_URL = "https://api.intra.42.fr/v2"
 
 
 class FortyTwo(Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.client = os.getenv("FORTYTWO_KEY")
         self.secret = os.getenv("FORTYTWO_SECRET")
@@ -58,6 +59,40 @@ class FortyTwo(Cog):
             asyncio.asleep(int(response.headers["Retry-After"]))
             return await self.post(url)
         return await response.json()
+
+    @command()
+    async def score(self, ctx):
+        log.info(f"score")
+        url = f"/blocs/1/coalitions"
+        data = await self.get(url)
+        data.sort(key=lambda i: i["score"], reverse=True)
+        embed = discord.Embed(
+            title="Score:",
+            color=int(data[0].get("color", "#D40000").replace("#", ""), 16),
+            description=f"{data[0].get('name')} domine !",
+        )
+        for idx, coa in enumerate(data):
+            diff = f"({int(coa['score'] - data[0]['score'])})" if idx > 0 else ""
+            score = f"{coa['score']} {diff}"
+            embed.add_field(
+                name=f"{idx + 1} - {coa['name']}", value=score, inline=False
+            )
+        await ctx.send(embed=embed)
+
+    @command()
+    async def where(self, ctx, user):
+        url = f"/users/{user}/locations"
+        data = await self.get(url)
+        ret = ""
+        if len(data) == 0 or data[0]["end_at"] is not None:
+            diff = datetime.now() - datetime.strptime(
+                data[0]["end_at"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+            formated_diff = format_timedelta(diff)
+            ret = f"*{user}* est hors ligne depuis {formated_diff}"
+        else:
+            ret = f"*{user}* est à la place *{data[0]['host']}*"
+        await ctx.send(ret)
 
     @command()
     async def profile(self, ctx, username):
