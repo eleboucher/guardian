@@ -55,8 +55,8 @@ class Emote(Cog):
 
     @command(aliases=("e",), description="Get a twitch emote")
     async def emote(self, ctx, emote_name: str):
+        log.info(f"command emote with args {emote_name}")
         emote = await self.get_global_emote(emote_name)
-        print(emote_name)
         if not emote:
             emote = await self.get_subscriber_emote(emote_name)
             if not emote:
