@@ -82,8 +82,9 @@ class FortyTwo(Cog):
         await ctx.send(embed=embed)
 
     @command()
-    async def where(self, ctx, user):
-        url = f"/users/{user}/locations"
+    async def where(self, ctx, login):
+        log.info(f"where for login {login}")
+        url = f"/users/{login}/locations"
         data = await self.get(url)
         ret = ""
         if len(data) == 0 or data[0]["end_at"] is not None:
@@ -91,15 +92,15 @@ class FortyTwo(Cog):
                 data[0]["end_at"], "%Y-%m-%dT%H:%M:%S.%fZ"
             )
             formated_diff = format_timedelta(diff)
-            ret = f"*{user}* est hors ligne depuis {formated_diff}"
+            ret = f"*{login}* est hors ligne depuis {formated_diff}"
         else:
-            ret = f"*{user}* est à la place *{data[0]['host']}*"
+            ret = f"*{login}* est à la place *{data[0]['host']}*"
         await ctx.send(ret)
 
     @command()
-    async def profile(self, ctx, username):
-        log.info(f"profil for username {username}")
-        url = f"/users/{username}"
+    async def profile(self, ctx, login):
+        log.info(f"profil for login {login}")
+        url = f"/users/{login}"
         url_coalition = f"{url}/coalitions/"
         user_data = await self.get(url)
         if not user_data or user_data == {}:
@@ -116,7 +117,7 @@ class FortyTwo(Cog):
             ]
         )
         title = (
-            f"{user_data.get('displayname')} {username} - "
+            f"{user_data.get('displayname')} {login} - "
             + f"{coalition_data[-1].get('slug')}"
         )
 
@@ -125,7 +126,7 @@ class FortyTwo(Cog):
             colour=discord.Colour(
                 int(coalition_data[-1].get("color", "#D40000").replace("#", ""), 16)
             ),
-            url=f"https://profile.intra.42.fr/users/{username}",
+            url=f"https://profile.intra.42.fr/users/{login}",
         )
         embed.set_thumbnail(url=user_data.get("image_url"))
         embed.set_footer(text="Powered by the Guardian")

@@ -12,6 +12,7 @@ class Misc(Cog):
 
     @command()
     async def meteo(self, ctx, *args):
+        log.info("meteo")
         location = "+".join(args) or "48.90,2.32"
         data = subprocess.run(
             ["curl", "-s", f"fr.wttr.in/{location}?T0"], stdout=subprocess.PIPE
