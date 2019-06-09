@@ -1,12 +1,12 @@
 import asyncio
 import logging
-import discord
 import os
 from datetime import datetime
 
+import discord
 from discord.ext.commands import Bot, Cog, command
 
-from utils import get_internship, format_timedelta
+from utils import format_timedelta, get_internship
 
 log = logging.getLogger(__name__)
 
@@ -71,6 +71,8 @@ class FortyTwo(Cog):
             color=int(data[0].get("color", "#D40000").replace("#", ""), 16),
             description=f"{data[0].get('name')} domine !",
         )
+        embed.set_footer(text="Powered by the Guardian")
+
         for idx, coa in enumerate(data):
             diff = f"({int(coa['score'] - data[0]['score'])})" if idx > 0 else ""
             score = f"{coa['score']} {diff}"
@@ -126,6 +128,7 @@ class FortyTwo(Cog):
             url=f"https://profile.intra.42.fr/users/{username}",
         )
         embed.set_thumbnail(url=user_data.get("image_url"))
+        embed.set_footer(text="Powered by the Guardian")
 
         embed.add_field(name="Level", value=cursus_level)
         embed.add_field(
