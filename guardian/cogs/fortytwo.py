@@ -30,7 +30,6 @@ class FortyTwo(Cog):
             "client_secret": self.secret,
         }
         response = await self.bot.http_session.post(TOKEN_URL, json=payload)
-        print("status code :", response.status)
         content = await response.json()
         return content["access_token"]
 
