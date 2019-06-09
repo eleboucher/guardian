@@ -30,7 +30,7 @@ bot.http_session = ClientSession(
 
 bot.load_extension("cogs.emote")
 bot.load_extension("cogs.fortytwo")
-
+bot.load_extension("cogs.miscs")
 
 bot.run(os.getenv("DISCORD_TOKEN"))
 
